@@ -16,15 +16,13 @@ public class TestWAVHeader {
         InputStream inputStream = TestWAVHeader.class.getResourceAsStream(
                 "/crowdtest-2015-10-27-2094633209562f42af3d5e37.30491309_6195513_alex-car-00008.m4a.wav");
         assertNotNull(inputStream);
-        byte[] bytes = new byte[44];
+        byte[] bytes = new byte[2048];
         WAVHeader header = new WAVHeader();
 
         try {
             int read = inputStream.read(bytes);
-            if (read >= 44) {
-                assertTrue(header.parseHeader(bytes));
-                System.out.println(header.printFormat());
-            }
+            assertTrue(header.parseHeader(bytes));
+            System.out.println(header.printFormat());
         } catch (IOException e) {
             e.printStackTrace();
             fail(e.getLocalizedMessage());
@@ -40,7 +38,7 @@ public class TestWAVHeader {
         assertNotNull(inputStream);
         bytes = new byte[30000];
         try {
-            int read = inputStream.read(bytes, 44, 30000 - 44);
+            int read = inputStream.read(bytes, 0, 30000);
             header.setSubChunk2Size(read);
             header.writeHeader(bytes, 0);
             File outputFile = new File("./alex-car-00001.m4a.wav");
@@ -48,7 +46,8 @@ public class TestWAVHeader {
                 outputFile.createNewFile();
             }
             FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
-            fileOutputStream.write(bytes, 0, read + 44);
+            fileOutputStream.write(header.writeHeader());
+            fileOutputStream.write(bytes, 0, read);
             fileOutputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
