@@ -40,7 +40,6 @@ public class TestWAVHeader {
         try {
             int read = inputStream.read(bytes, 0, 30000);
             header.setSubChunk2Size(read);
-            header.writeHeader(bytes, 0);
             File outputFile = new File("./alex-car-00001.m4a.wav");
             if (!outputFile.exists()) {
                 outputFile.createNewFile();
